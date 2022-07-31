@@ -4,9 +4,9 @@ import { TimeoutError, throwError, lastValueFrom } from 'rxjs';
 import { ClientRMQ } from '@nestjs/microservices';
 
 export function FetchData(client) {
-  return async (COMMAND: { cmd: string; role: string }, args: any = {}): Promise<any> => {
+  return async (event: { cmd: string; role: string }, args: any = {}): Promise<any> => {
     return lastValueFrom(
-      client.send(COMMAND, args).pipe(
+      client.send(event, args).pipe(
         timeout(5000),
         pluck('response'),
         concatMap(({ status = 'SUCCESS', ok, ...res }) => {
@@ -24,10 +24,10 @@ export function FetchData(client) {
 }
 
 export function EmitData(client: ClientRMQ) {
-  return async (COMMAND: { cmd: string; role: string }, args: any = {}): Promise<any> => {
+  return async (event: { cmd: string; role: string }, args: any = {}): Promise<any> => {
     return new Promise((res, rej) => {
       try {
-        return res(client.emit(COMMAND, args));
+        return res(client.emit(event, args));
       } catch (error) {
         return rej(error);
       }
@@ -36,9 +36,9 @@ export function EmitData(client: ClientRMQ) {
 }
 
 export function FetchIOData(client: ClientRMQ) {
-  return async (COMMAND: { cmd: string; role: string }, args: any): Promise<any> => {
+  return async (event: { cmd: string; role: string }, args: any): Promise<any> => {
     return lastValueFrom(
-      client.send(COMMAND, args).pipe(
+      client.send(event, args).pipe(
         timeout(5000),
         pluck('response'),
         concatMap((res) => Promise.resolve(res)),
@@ -49,9 +49,9 @@ export function FetchIOData(client: ClientRMQ) {
 }
 
 export function FetchObject(client) {
-  return async (COMMAND: { cmd: string; role?: string }, args: any = {}): Promise<any> => {
+  return async (event: { cmd: string; role?: string }, args: any = {}): Promise<any> => {
     return lastValueFrom(
-      client.send(COMMAND, args).pipe(
+      client.send(event, args).pipe(
         timeout(5000),
         pluck('response'),
         concatMap((res) => Promise.resolve(res)),

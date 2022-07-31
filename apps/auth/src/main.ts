@@ -1,22 +1,27 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-
-import { AppModule } from './app/app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { projectConstants} from '@do-business/constants';
+import { useContainer } from 'class-validator';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3334;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
+  const configService = app.get(ConfigService);
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: configService.get<string>('RABBITMQ_URL', 'amqp://admin:admin@localhost:5682 ').split(' '),
+      queue: projectConstants.ServicesClient.AUTH,
+      noAck: true,
+      queueOptions: {
+        durable: false,
+      },
+    },
+  });
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  await app.startAllMicroservices();
+  Logger.log('AUTH Microservice has started...');
 }
-
 bootstrap();

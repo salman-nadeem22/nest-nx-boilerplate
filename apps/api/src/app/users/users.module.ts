@@ -15,7 +15,7 @@ import { UsersService } from './users.service';
           return {
             transport: Transport.RMQ,
             options: {
-              urls: configService.get<string>('RABBITMQ_URL') ? configService.get<string>('RABBITMQ_URL').split(' ') : ['amqp://admin:admin@localhost:5682'],
+              urls: configService.get<string>('RABBITMQ_URL', 'amqp://admin:admin@localhost:5682 ').split(' '),
               queue: projectConstants.ServicesClient.USER,
               noAck: true,
               queueOptions: {
