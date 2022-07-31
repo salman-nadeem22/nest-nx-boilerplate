@@ -1,0 +1,11 @@
+export const LOGOUT = 'LOGOUT';
+export const LOGIN = 'LOGIN';
+export const OTP_TOKEN = 'OTP_TOKEN';
+export const REFRESH_TOKEN = 'REFRESH_TOKEN';
+export const CREATE_TOKENS = 'CREATE_TOKENS';
+export const RESET_TOKEN = 'RESET_TOKEN';
+export const REGISTER = 'REGISTER';
+export const BLOCK_ACCESS_TOKEN = 'BLOCK_ACCESS_TOKEN';
+export const VERIFY_ACCESS_TOKEN = 'VERIFY_ACCESS_TOKEN';
+export const VERIFY_REFRESH_TOKEN = 'VERIFY_REFRESH_TOKEN';
+export const REMOVE_REFRESH_TOKEN = 'REMOVE_REFRESH_TOKEN';
